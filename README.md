@@ -209,7 +209,7 @@ Get free test USDC for both wallets at <https://faucet.circle.com> (Arc Testnet)
 
 ```bash
 npm run build:contracts
-npm run deploy:mainnet       # deploys the factory once per network
+npm run deploy:testnet       # deploys the factory once per network
 ```
 
 ### Use the SDK
@@ -315,12 +315,12 @@ LAYERSWAP_ARC_NETWORK=
 ```js
 const { LayerSwap } = require('./sdk');
 
- const layerSwap = new LayerSwap({ apiKey: process.env.LAYERSWAP_API_KEY, sandbox: process.env.ZION_NETWORK === 'mainnet' });
+ const layerSwap = new LayerSwap({ apiKey: process.env.LAYERSWAP_API_KEY, sandbox: process.env.ZION_NETWORK === 'testnet' });
 
 const INVOICE = { businessId: 'shop_123', invoiceId: 'INV-1042', expectedAmount: 100 };
 
 //Which chains can the customer pay from?
-const sources = await zion.layerSwapSources({ layerSwap, destinationNetwork: 'ARC_MAINNET' });
+const sources = await zion.layerSwapSources({ layerSwap, destinationNetwork: 'ARC_TESTNET' });
 
 //What will it cost? Show this to the customer before they commit.
 const quote = await zion.layerSwapDetailedQuote({
@@ -364,13 +364,7 @@ await zion.sweepInvoice(INVOICE);         // deploy the virtual account and swee
 
 1. **Rehearse on testnet:** a lockout, an unlock, a reversal, a fee change, a recovery, an update.
 2. **Make two new wallets** (never reuse testnet keys): the **admin** (deploys and owns the factory) and the **relayer** (your server). Fund the admin with a little USDC and the relayer with enough for gas.
-3. **Configure** `.env`:
-   ```bash
-   ZION_NETWORK=mainnet
-   ZION_ADMIN_PRIVATE_KEY_MAINNET=0x...
-   ZION_RELAYER_PRIVATE_KEY_MAINNET=0x...
-   ZION_CONFIRM_MAINNET=yes
-   ```
+3. **Configure** `.env` as in above
 4. **Deploy:** `npm run deploy`. It refuses unless the two wallets differ and you confirmed, and it checks the RPC really is chain 5042 before sending anything. The factory address is saved in `storage/zion/deployments.json`.
 5. **Verify:** `npm run status` shows the admin, relayer, fee, hold and version.
 6. **Operate:** keep the admin key offline, put the relayer key (and your Layerswap API key) in a secrets manager, run the listener under a process manager, alert when `zion.relayerHealth().low` is true, and authenticate every request before it can submit a password attempt (wrong attempts are counted on-chain).
