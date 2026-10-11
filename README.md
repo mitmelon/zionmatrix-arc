@@ -136,8 +136,6 @@ flowchart TD
 - Guessing offline is not an option either: it needs the **salt** as well as the address, and 96 bits of randomness behind a memory-hard function is out of reach.
 - The **relayer** (ZionMatrix's server) only *submits* transactions and pays gas. It cannot sign for a business.
 
-Full walkthrough: [`docs/SECURITY.md`](docs/SECURITY.md).
-
 ---
 
 ## 🧱 How the contracts work
